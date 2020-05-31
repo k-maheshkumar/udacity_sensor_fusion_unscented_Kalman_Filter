@@ -4,6 +4,9 @@
 #include "Eigen/Dense"
 #include "measurement_package.h"
 
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+
 class UKF
 {
 public:
@@ -35,6 +38,14 @@ public:
    * @param meas_package The measurement at k+1
    */
     void UpdateLidar(MeasurementPackage meas_package);
+
+    void GenerateAugmentedSigmaPoints(MatrixXd &Xsig_aug);
+    void SigmaPointPrediction(const MatrixXd &Xsig_points, const double &delta_t);
+    void PredictMeanAndCovariance();
+    void PredictRadarMeasurement(const int &n_z, MeasurementPackage::SensorType sensor_type, MatrixXd &Zsig, VectorXd &z_pred, MatrixXd &S);
+    void UpdateState(const int &n_z, const MatrixXd &Zsig, const MatrixXd &S, VectorXd &z_pred, const VectorXd &z);
+
+    float CalculateNIS(const VectorXd &z_measured, const VectorXd &z_pred, const MatrixXd &covariance);
 
     /**
    * Updates the state and the state covariance matrix using a radar measurement
